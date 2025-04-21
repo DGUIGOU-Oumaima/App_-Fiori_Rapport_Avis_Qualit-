@@ -1,0 +1,56 @@
+<mvc:View
+    controllerName="frontendapp.controller.MainView"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+
+    <Page id="mainPage" title="Rapport des Avis">
+        <content>
+
+            <!-- Barre de filtres personnalisée -->
+            <VBox id="filterBox" class="sapUiSmallMargin">
+                <HBox id="_IDGenHBox">
+                    <Label id="avi1hj" text="Numéro d'avis" class="sapUiSmallMarginEnd"/>
+                    <Input id="numeroAvisInput" width="200px" placeholder="Rechercher..."/>
+                    
+                    <Label id="aviI" text="Type d'avis" class="sapUiSmallMarginEnd sapUiSmallMarginBegin"/>
+                    <Input id="typeAvisInput" width="200px" placeholder="Rechercher..."/>
+
+                    <Label id="avi1FG" text="Statut de l'avis" class="sapUiSmallMarginEnd sapUiSmallMarginBegin"/>
+                    <Input id="statutAvisInput" width="200px" placeholder="Rechercher..."/>
+
+                    <Button id="_IDGenButton" text="Filtrer" press="onFilter" class="sapUiSmallMarginBegin"/>
+                </HBox>
+            </VBox>
+
+            <!-- Tableau de données -->
+            <Table id="avisTable" items="{localAvis>/avis}" inset="false">
+                <columns>
+                    <Column id="_IDGenColumn"><Text id="avi1" text="Numéro d'avis" /></Column>
+                    <Column id="_IDGenColumn1"><Text id="avi2" text="Type d'avis" /></Column>
+                    <Column id="_IDGenColumn2"><Text id="avi3" text="Statut de l'avis" /></Column>
+                    <Column id="_IDGenColumn5"><Text id="avi4" text="Date de l'avis" /></Column>
+                    <Column id="_IDGenColumn3"><Text id="avi5" text="Créé par" /></Column>
+                    <Column id="_IDGenColumn6"><Text id="avi6" text="Article" /></Column>
+                    <Column id="_IDGenColumn4"><Text id="avi7" text="Description d'article" /></Column>
+                    <Column id="_IDGenColumn7"><Text id="avi8" text="Âge du dossier" /></Column>
+                </columns>
+                <items>
+                    <ColumnListItem id="_IDGenColumnListItem">
+                        <cells>
+                            <Text id="avi9" text="{localAvis>numero}" />
+                            <Text id="avi10" text="{localAvis>type}" />
+                            <Text id="avi11" text="{localAvis>statut}" />
+                            <Text id="avi12" text="{localAvis>date}" />
+                            <Text id="avi13" text="{localAvis>creePar}" />
+                            <Text id="avi14" text="{localAvis>article}" />
+                            <Text id="avi15" text="{localAvis>description}" />
+                            <Text id="avi16" text="{localAvis>age}" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+
+        </content>
+    </Page>
+</mvc:View>

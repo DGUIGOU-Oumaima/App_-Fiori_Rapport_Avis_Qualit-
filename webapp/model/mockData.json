@@ -1,0 +1,20 @@
+[
+    {
+      "qmnum": "10000123",
+      "qmart": "Q1",
+      "erdat": "2024-04-01",
+      "ernam": "OMAR",
+      "matnr": "MAT-001",
+      "maktx": "Pompe hydraulique",
+      "age_dossier": 5,
+      "cycle_dispo": 12,
+      "delai_aq": 3,
+      "delai_service": 4,
+      "verif_date_recep": "2024-04-03",
+      "feu_dispo": "green",
+      "feu_aq": "red",
+      "feu_service": "yellow",
+      "feu_verif": "green"
+    }
+  ]
+  
