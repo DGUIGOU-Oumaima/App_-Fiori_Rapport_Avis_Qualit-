@@ -2,13 +2,14 @@ sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
     "sap/ui/model/Filter",
-    "sap/ui/model/FilterOperator"
-], function(Controller, JSONModel, Filter, FilterOperator) {
+    "sap/ui/model/FilterOperator",
+    "sap/m/MessageBox"
+], function(Controller, JSONModel, Filter, FilterOperator, MessageBox) {
     "use strict";
 
     return Controller.extend("rapportavisqualite.controller.ViewAvis", {
-
         onInit: function () {
+            // Sample data for avis
             const oData = {
                 avis: [
                     {
@@ -20,10 +21,12 @@ sap.ui.define([
                         article: "Art001",
                         description: "Problème technique détecté",
                         age: "5 jours",
-
-                        // Champs supplémentaires pour le rapport de vérification
-                        delaiAQFeu: "2j",
-                        delaiServiceFeu: "3j",
+                        tempsCycle: "3j",
+                        feu: "Vert",
+                        delaiAQ: "2j",
+                        delaiAQFeu: "Vert",
+                        delaiDetecteur: "1j",
+                        delaiDetecteurFeu: "Vert",
                         verifReceptionFeu: "Oui",
                         autreChamp: "Analyse approfondie en attente"
                     },
@@ -36,18 +39,20 @@ sap.ui.define([
                         article: "Art002",
                         description: "Contrôle qualité effectué",
                         age: "12 jours",
-                        delaiAQFeu: "1j",
-                        delaiServiceFeu: "2j",
+                        tempsCycle: "5j",
+                        feu: "Rouge",
+                        delaiAQ: "4j",
+                        delaiAQFeu: "Rouge",
+                        delaiDetecteur: "3j",
+                        delaiDetecteurFeu: "Jaune",
                         verifReceptionFeu: "Non",
                         autreChamp: "Remarques sur le dossier"
                     }
                 ]
             };
 
-            const oModel = new JSONModel(oData);
-            this.getView().setModel(oModel, "localAvis");
-
-            const oDashboardModel = new JSONModel({
+            // Dashboard data
+            const oDashboardData = {
                 stats: {
                     erreurs: 12,
                     warnings: 5,
@@ -58,18 +63,35 @@ sap.ui.define([
                     { categorie: "Erreurs", valeur: 12 },
                     { categorie: "Warnings", valeur: 5 },
                     { categorie: "Succès", valeur: 83 }
-                ],
-                rapport: [
-                    { id: "R1", nom: "Test 1", statut: "Succès" },
-                    { id: "R2", nom: "Test 2", statut: "Erreur" }
-                    // ...
                 ]
-            });
-        
-            this.getView().setModel(oDashboardModel);
+            };
+
+            // Set models
+            const oAvisModel = new JSONModel(oData);
+            this.getView().setModel(oAvisModel, "localAvis");
+
+            // Use the component-level dashboard model
+            const oComponent = this.getOwnerComponent();
+            const oDashboardModel = oComponent.getModel("dashboard");
+            oDashboardModel.setData(oDashboardData);
+
+            // Debug: Log the model data
+            console.log("Dashboard model data:", oDashboardModel.getData());
+
+            // Ensure chart is updated after model is set
+            oDashboardModel.attachRequestCompleted(function () {
+                const oChart = this.byId("statusChart");
+                if (oChart) {
+                    oChart.rerender();
+                }
+            }.bind(this));
         },
 
-        
+        onTilePress: function (oEvent) {
+            const sHeader = oEvent.getSource().getHeader();
+            MessageBox.information(`Vous avez cliqué sur le tile: ${sHeader}`);
+        },
+
 
         onFilter: function () {
             const oView = this.getView();
@@ -78,7 +100,6 @@ sap.ui.define([
             const statutValue = oView.byId("statutAvisInput").getValue();
 
             const aFilters = [];
-
             if (numeroValue) {
                 aFilters.push(new Filter("numero", FilterOperator.Contains, numeroValue));
             }
@@ -93,20 +114,6 @@ sap.ui.define([
             const oBinding = oTable.getBinding("items");
             oBinding.filter(aFilters);
         },
-        onShowDetails: function (oEvent) {
-            const oItem = oEvent.getSource().getBindingContext("localAvis").getObject();
-
-            const sDetails = `
-🕑 Délai AQ : ${oItem.delaiAQ}
-🚦 Feu de circulation : ${oItem.delaiFeu}
-🛠️ Délai Service Détecteur : ${oItem.delaiDetecteur}
-📥 Date réception info. : ${oItem.dateReception}
-`;
-
-            MessageBox.information(sDetails, {
-                title: "Détails complémentaires"
-            });
-        },
 
         onShowFullVerificationReport: function (oEvent) {
             const oCtx = oEvent.getSource().getBindingContext("localAvis").getObject();
@@ -114,7 +121,7 @@ sap.ui.define([
 
             const rapport = `
 🔸 Délai AQ Feu de circulation : ${oCtx.delaiAQFeu || "-"}
-🔸 Délai Service Détecteur Feu : ${oCtx.delaiServiceFeu || "-"}
+🔸 Délai Service Détecteur Feu : ${oCtx.delaiDetecteurFeu || "-"}
 🔸 Vérification Réception Info. Feu : ${oCtx.verifReceptionFeu || "-"}
 🔸 Autres remarques : ${oCtx.autreChamp || "-"}
             `;
@@ -126,22 +133,20 @@ sap.ui.define([
         onCloseVerifDialog: function () {
             this.byId("verifDialog").close();
         },
+
         onShowGeneral: function () {
             this.byId("avisTable").setVisible(true);
             this.byId("delaiTable").setVisible(false);
-            // tu peux ajouter d'autres tables ici si nécessaire
         },
-        
+
         onShowDelai: function () {
-            this.byId("avisTable").setVisible(false); // reste affiché
-            this.byId("delaiTable").setVisible(true); // le nouveau tableau avec les autres colonnes s'affiche aussi
+            this.byId("avisTable").setVisible(false);
+            this.byId("delaiTable").setVisible(true);
         },
-        
+
         onShowVerification: function () {
-            this.byId("avisTable").setVisible(true); // peut être modifié selon si tu veux le garder ou pas
+            this.byId("avisTable").setVisible(true);
             this.byId("delaiTable").setVisible(false);
-            // tu peux ajouter un autre tableau ici pour la vérification si tu veux
         }
-        
     });
 });
