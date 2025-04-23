@@ -6,7 +6,7 @@ sap.ui.define([
 ], function(Controller, JSONModel, Filter, FilterOperator) {
     "use strict";
 
-    return Controller.extend("frontendapp.controller.MainView", {
+    return Controller.extend("rapportavisqualite.controller.ViewAvis", {
 
         onInit: function () {
             const oData = {
@@ -19,47 +19,79 @@ sap.ui.define([
                         creePar: "Alice",
                         article: "Art001",
                         description: "Problème technique détecté",
-                        age: "5 jours"
-                    },
-                    {
-                        numero: "AV002",
-                        type: "Qualité",
-                        statut: "Fermé",
-                        date: "2025-03-25",
-                        creePar: "Bob",
-                        article: "Art002",
-                        description: "Contrôle qualité effectué",
-                        age: "12 jours"
+                        age: "5 jours",
+                        delaiAQ: "2j",
+                        delaiService: "3j",
+                        verifReception: "OK"
                     }
-                    // Tu peux ajouter d’autres objets ici
+                    // ...
                 ]
             };
-
             const oModel = new JSONModel(oData);
             this.getView().setModel(oModel, "localAvis");
+        
+            // Initial segment selection
+            this._updateColumnVisibility("general");
         },
-
-        onFilter: function () {
-            const oView = this.getView();
-            const numeroValue = oView.byId("numeroAvisInput").getValue();
-            const typeValue = oView.byId("typeAvisInput").getValue();
-            const statutValue = oView.byId("statutAvisInput").getValue();
-
-            const aFilters = [];
-
-            if (numeroValue) {
-                aFilters.push(new Filter("numero", FilterOperator.Contains, numeroValue));
-            }
-            if (typeValue) {
-                aFilters.push(new Filter("type", FilterOperator.Contains, typeValue));
-            }
-            if (statutValue) {
-                aFilters.push(new Filter("statut", FilterOperator.Contains, statutValue));
-            }
-
-            const oTable = oView.byId("avisTable");
-            const oBinding = oTable.getBinding("items");
-            oBinding.filter(aFilters);
+        
+        onSegmentChange: function (oEvent) {
+            const sKey = oEvent.getParameter("key");
+            this._updateColumnVisibility(sKey);
+        },
+        
+        _updateColumnVisibility: function (groupKey) {
+            const view = this.getView();
+        
+            const oCols = {
+                general: ["colNumero", "colType", "colStatut", "colDate"],
+                delais: ["colDelaiAQ", "colDelaiService"],
+                verifications: ["colVerifReception"]
+            };
+        
+            // Masquer toutes les colonnes sauf celle du bouton détail
+            const allColumns = [
+                "colNumero", "colType", "colStatut", "colDate",
+                "colDelaiAQ", "colDelaiService",
+                "colVerifReception"
+            ];
+        
+            allColumns.forEach(colId => {
+                const col = view.byId(colId);
+                if (col) col.setVisible(false);
+            });
+        
+            // Afficher les colonnes du groupe sélectionné
+            const visibleCols = oCols[groupKey] || [];
+            visibleCols.forEach(colId => {
+                const col = view.byId(colId);
+                if (col) col.setVisible(true);
+            });
+        
+            // Toujours visible : bouton détails
+            const colDetails = view.byId("colDetails");
+            if (colDetails) colDetails.setVisible(true);
+        },
+        
+        onShowDetails: function (oEvent) {
+            const oButton = oEvent.getSource();
+            const oCtx = oButton.getBindingContext("localAvis").getObject();
+            const oPopover = this.byId("detailsPopover");
+        
+            let detailString = `
+                • Créé par: ${oCtx.creePar}
+                • Article: ${oCtx.article}
+                • Description: ${oCtx.description}
+                • Âge: ${oCtx.age}
+                • Délai AQ: ${oCtx.delaiAQ}
+                • Délai Service: ${oCtx.delaiService}
+                • Vérification: ${oCtx.verifReception}
+            `;
+        
+            this.byId("detailsText").setText(detailString.trim());
+            oPopover.openBy(oButton);
         }
+        
+        
+        
     });
 });
