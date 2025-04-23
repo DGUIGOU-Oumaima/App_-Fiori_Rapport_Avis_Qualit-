@@ -1,7 +1,7 @@
 {
   "_version": "1.65.0",
   "sap.app": {
-    "id": "frontendapp",
+    "id": "rapportavisqualite",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -13,7 +13,7 @@
     "sourceTemplate": {
       "id": "@sap/generator-fiori:basic",
       "version": "1.17.3",
-      "toolsId": "ce7d1f10-b190-47c5-ba70-658a387abb69"
+      "toolsId": "536d87d3-947e-49c1-a9dc-d0a756ed5bf9"
     }
   },
   "sap.ui": {
@@ -35,10 +35,13 @@
   "sap.ui5": {
     "flexEnabled": true,
     "dependencies": {
-      "minUI5Version": "1.134.1",
+      "minUI5Version": "1.135.0",
       "libs": {
         "sap.m": {},
-        "sap.ui.core": {}
+        "sap.ui.core": {},
+        "sap.ui.layout": {},
+        "sap.f": {},
+        "sap.viz": {}
       }
     },
     "contentDensities": {
@@ -46,13 +49,21 @@
       "cozy": true
     },
     "models": {
-      "i18n": {
-        "type": "sap.ui.model.resource.ResourceModel",
-        "settings": {
-          "bundleName": "frontendapp.i18n.i18n"
-        }
-      }
-    },
+  "i18n": {
+    "type": "sap.ui.model.resource.ResourceModel",
+    "settings": {
+      "bundleName": "rapportavisqualite.i18n.i18n"
+    }
+  },
+  "localAvis": {
+    "type": "sap.ui.model.json.JSONModel",
+    "settings": {}
+  },
+  "dashboard": {
+    "type": "sap.ui.model.json.JSONModel",
+    "settings": {}
+  }
+},
     "resources": {
       "css": [
         {
@@ -68,28 +79,28 @@
         "transition": "slide",
         "type": "View",
         "viewType": "XML",
-        "path": "frontendapp.view",
+        "path": "rapportavisqualite.view",
         "async": true,
-        "viewPath": "frontendapp.view"
+        "viewPath": "rapportavisqualite.view"
       },
       "routes": [
         {
-          "name": "RouteMainView",
+          "name": "RouteViewAvis",
           "pattern": ":?query:",
           "target": [
-            "TargetMainView"
+            "TargetViewAvis"
           ]
         }
       ],
       "targets": {
-        "TargetMainView": {
-          "id": "MainView",
-          "name": "MainView"
+        "TargetViewAvis": {
+          "id": "ViewAvis",
+          "name": "ViewAvis"
         }
       }
     },
     "rootView": {
-      "viewName": "frontendapp.view.App",
+      "viewName": "rapportavisqualite.view.App",
       "type": "XML",
       "id": "App",
       "async": true
