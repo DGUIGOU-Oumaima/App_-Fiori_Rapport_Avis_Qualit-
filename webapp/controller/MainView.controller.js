@@ -20,78 +20,105 @@ sap.ui.define([
                         article: "Art001",
                         description: "Problème technique détecté",
                         age: "5 jours",
-                        delaiAQ: "2j",
-                        delaiService: "3j",
-                        verifReception: "OK"
+
+                        // Champs supplémentaires pour le rapport de vérification
+                        delaiAQFeu: "2j",
+                        delaiServiceFeu: "3j",
+                        verifReceptionFeu: "Oui",
+                        autreChamp: "Analyse approfondie en attente"
+                    },
+                    {
+                        numero: "AV002",
+                        type: "Qualité",
+                        statut: "Fermé",
+                        date: "2025-03-25",
+                        creePar: "Bob",
+                        article: "Art002",
+                        description: "Contrôle qualité effectué",
+                        age: "12 jours",
+                        delaiAQFeu: "1j",
+                        delaiServiceFeu: "2j",
+                        verifReceptionFeu: "Non",
+                        autreChamp: "Remarques sur le dossier"
                     }
-                    // ...
                 ]
             };
+
             const oModel = new JSONModel(oData);
             this.getView().setModel(oModel, "localAvis");
-        
-            // Initial segment selection
-            this._updateColumnVisibility("general");
         },
-        
-        onSegmentChange: function (oEvent) {
-            const sKey = oEvent.getParameter("key");
-            this._updateColumnVisibility(sKey);
+
+        onFilter: function () {
+            const oView = this.getView();
+            const numeroValue = oView.byId("numeroAvisInput").getValue();
+            const typeValue = oView.byId("typeAvisInput").getValue();
+            const statutValue = oView.byId("statutAvisInput").getValue();
+
+            const aFilters = [];
+
+            if (numeroValue) {
+                aFilters.push(new Filter("numero", FilterOperator.Contains, numeroValue));
+            }
+            if (typeValue) {
+                aFilters.push(new Filter("type", FilterOperator.Contains, typeValue));
+            }
+            if (statutValue) {
+                aFilters.push(new Filter("statut", FilterOperator.Contains, statutValue));
+            }
+
+            const oTable = oView.byId("avisTable");
+            const oBinding = oTable.getBinding("items");
+            oBinding.filter(aFilters);
         },
-        
-        _updateColumnVisibility: function (groupKey) {
-            const view = this.getView();
-        
-            const oCols = {
-                general: ["colNumero", "colType", "colStatut", "colDate"],
-                delais: ["colDelaiAQ", "colDelaiService"],
-                verifications: ["colVerifReception"]
-            };
-        
-            // Masquer toutes les colonnes sauf celle du bouton détail
-            const allColumns = [
-                "colNumero", "colType", "colStatut", "colDate",
-                "colDelaiAQ", "colDelaiService",
-                "colVerifReception"
-            ];
-        
-            allColumns.forEach(colId => {
-                const col = view.byId(colId);
-                if (col) col.setVisible(false);
-            });
-        
-            // Afficher les colonnes du groupe sélectionné
-            const visibleCols = oCols[groupKey] || [];
-            visibleCols.forEach(colId => {
-                const col = view.byId(colId);
-                if (col) col.setVisible(true);
-            });
-        
-            // Toujours visible : bouton détails
-            const colDetails = view.byId("colDetails");
-            if (colDetails) colDetails.setVisible(true);
-        },
-        
         onShowDetails: function (oEvent) {
-            const oButton = oEvent.getSource();
-            const oCtx = oButton.getBindingContext("localAvis").getObject();
-            const oPopover = this.byId("detailsPopover");
-        
-            let detailString = `
-                • Créé par: ${oCtx.creePar}
-                • Article: ${oCtx.article}
-                • Description: ${oCtx.description}
-                • Âge: ${oCtx.age}
-                • Délai AQ: ${oCtx.delaiAQ}
-                • Délai Service: ${oCtx.delaiService}
-                • Vérification: ${oCtx.verifReception}
+            const oItem = oEvent.getSource().getBindingContext("localAvis").getObject();
+
+            const sDetails = `
+🕑 Délai AQ : ${oItem.delaiAQ}
+🚦 Feu de circulation : ${oItem.delaiFeu}
+🛠️ Délai Service Détecteur : ${oItem.delaiDetecteur}
+📥 Date réception info. : ${oItem.dateReception}
+`;
+
+            MessageBox.information(sDetails, {
+                title: "Détails complémentaires"
+            });
+        },
+
+        onShowFullVerificationReport: function (oEvent) {
+            const oCtx = oEvent.getSource().getBindingContext("localAvis").getObject();
+            const dialog = this.byId("verifDialog");
+
+            const rapport = `
+🔸 Délai AQ Feu de circulation : ${oCtx.delaiAQFeu || "-"}
+🔸 Délai Service Détecteur Feu : ${oCtx.delaiServiceFeu || "-"}
+🔸 Vérification Réception Info. Feu : ${oCtx.verifReceptionFeu || "-"}
+🔸 Autres remarques : ${oCtx.autreChamp || "-"}
             `;
+
+            this.byId("verifRapportText").setText(rapport.trim());
+            dialog.open();
+        },
+
+        onCloseVerifDialog: function () {
+            this.byId("verifDialog").close();
+        },
+        onShowGeneral: function () {
+            this.byId("avisTable").setVisible(true);
+            this.byId("delaiTable").setVisible(false);
+            // tu peux ajouter d'autres tables ici si nécessaire
+        },
         
-            this.byId("detailsText").setText(detailString.trim());
-            oPopover.openBy(oButton);
+        onShowDelai: function () {
+            this.byId("avisTable").setVisible(false); // reste affiché
+            this.byId("delaiTable").setVisible(true); // le nouveau tableau avec les autres colonnes s'affiche aussi
+        },
+        
+        onShowVerification: function () {
+            this.byId("avisTable").setVisible(true); // peut être modifié selon si tu veux le garder ou pas
+            this.byId("delaiTable").setVisible(false);
+            // tu peux ajouter un autre tableau ici pour la vérification si tu veux
         }
-        
-        
         
     });
 });
