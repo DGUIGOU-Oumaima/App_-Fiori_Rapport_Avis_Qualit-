@@ -1,55 +1,71 @@
 <mvc:View
-    controllerName="frontendapp.controller.MainView"
+    controllerName="rapportavisqualite.controller.ViewAvis"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
-    xmlns:core="sap.ui.core">
+    xmlns:core="sap.ui.core"
+    xmlns:html="http://www.w3.org/1999/xhtml">
 
     <Page id="mainPage" title="Rapport des Avis">
         <content>
 
-            <!-- Barre de filtres personnalisée -->
-            <VBox id="filterBox" class="sapUiSmallMargin">
+            <!-- Barre des segments -->
+            <VBox id="_IDGenVBox" class="sapUiSmallMargin">
                 <HBox id="_IDGenHBox">
-                    <Label id="avi1hj" text="Numéro d'avis" class="sapUiSmallMarginEnd"/>
-                    <Input id="numeroAvisInput" width="200px" placeholder="Rechercher..."/>
-                    
-                    <Label id="aviI" text="Type d'avis" class="sapUiSmallMarginEnd sapUiSmallMarginBegin"/>
-                    <Input id="typeAvisInput" width="200px" placeholder="Rechercher..."/>
-
-                    <Label id="avi1FG" text="Statut de l'avis" class="sapUiSmallMarginEnd sapUiSmallMarginBegin"/>
-                    <Input id="statutAvisInput" width="200px" placeholder="Rechercher..."/>
-
-                    <Button id="_IDGenButton" text="Filtrer" press="onFilter" class="sapUiSmallMarginBegin"/>
+                    <Label id="_IDGenLabel" text="Afficher par groupe :" class="sapUiSmallMarginEnd"/>
+                    <SegmentedButton id="segmentGroups" selectionChange="onSegmentChange">
+                        <items>
+                            <SegmentedButtonItem id="_IDGenSegmentedButtonItem" text="Général" key="general" />
+                            <SegmentedButtonItem id="_IDGenSegmentedButtonItem1" text="Délais" key="delais" />
+                            <SegmentedButtonItem id="_IDGenSegmentedButtonItem2" text="Vérifications" key="verifications" />
+                        </items>
+                    </SegmentedButton>
                 </HBox>
             </VBox>
 
             <!-- Tableau de données -->
             <Table id="avisTable" items="{localAvis>/avis}" inset="false">
                 <columns>
-                    <Column id="_IDGenColumn"><Text id="avi1" text="Numéro d'avis" /></Column>
-                    <Column id="_IDGenColumn1"><Text id="avi2" text="Type d'avis" /></Column>
-                    <Column id="_IDGenColumn2"><Text id="avi3" text="Statut de l'avis" /></Column>
-                    <Column id="_IDGenColumn5"><Text id="avi4" text="Date de l'avis" /></Column>
-                    <Column id="_IDGenColumn3"><Text id="avi5" text="Créé par" /></Column>
-                    <Column id="_IDGenColumn6"><Text id="avi6" text="Article" /></Column>
-                    <Column id="_IDGenColumn4"><Text id="avi7" text="Description d'article" /></Column>
-                    <Column id="_IDGenColumn7"><Text id="avi8" text="Âge du dossier" /></Column>
+                    <Column id="colNumero"><Text id="ida" text="Numéro d'avis" /></Column>
+                    <Column id="colType"><Text id="idb" text="Type d'avis" /></Column>
+                    <Column id="colStatut"><Text id="idc" text="Statut de l'avis" /></Column>
+                    <Column id="colDate"><Text id="idd" text="Date de l'avis" /></Column>
+
+                    <!-- Groupe Délais -->
+                    <Column id="colDelaiAQ"><Text id="idgd" text="Délai AQ" /></Column>
+                    <Column id="colDelaiService"><Text id="ide" text="Délai Service Détecteur" /></Column>
+
+                    <!-- Groupe Vérification -->
+                    <Column id="colVerifReception"><Text id="idf" text="Vérif. Date réception info." /></Column>
+
+                    <!-- Colonne bouton Détails -->
+                    <Column id="colDetails" hAlign="Center"><Text id="idg" text="Détails" /></Column>
                 </columns>
                 <items>
                     <ColumnListItem id="_IDGenColumnListItem">
                         <cells>
-                            <Text id="avi9" text="{localAvis>numero}" />
-                            <Text id="avi10" text="{localAvis>type}" />
-                            <Text id="avi11" text="{localAvis>statut}" />
-                            <Text id="avi12" text="{localAvis>date}" />
-                            <Text id="avi13" text="{localAvis>creePar}" />
-                            <Text id="avi14" text="{localAvis>article}" />
-                            <Text id="avi15" text="{localAvis>description}" />
-                            <Text id="avi16" text="{localAvis>age}" />
+                            <Text id="idaa" text="{localAvis>numero}" />
+                            <Text id="idab" text="{localAvis>type}" />
+                            <Text id="idbga" text="{localAvis>statut}" />
+                            <Text id="idamp" text="{localAvis>date}" />
+
+                            <Text id="idaol" text="{localAvis>delaiAQ}" />
+                            <Text id="idpa" text="{localAvis>delaiService}" />
+
+                            <Text id="idma" text="{localAvis>verifReception}" />
+
+                            <Button id="_IDGenButton" icon="sap-icon://inspection" press="onShowDetails" />
                         </cells>
                     </ColumnListItem>
                 </items>
             </Table>
+
+            <!-- Popover pour détails -->
+            <Popover id="detailsPopover" placement="Auto" showHeader="false">
+                <VBox id="_IDGenVBox1" class="sapUiSmallMargin">
+                    <Text id="idpma" text="🗂️ Détails de l'avis" class="sapUiSmallMarginBottom sapUiTinyMarginTop"/>
+                    <Text id="detailsText" />
+                </VBox>
+            </Popover>
 
         </content>
     </Page>
