@@ -46,7 +46,30 @@ sap.ui.define([
 
             const oModel = new JSONModel(oData);
             this.getView().setModel(oModel, "localAvis");
+
+            const oDashboardModel = new JSONModel({
+                stats: {
+                    erreurs: 12,
+                    warnings: 5,
+                    success: 83,
+                    tauxSucces: 83
+                },
+                chartData: [
+                    { categorie: "Erreurs", valeur: 12 },
+                    { categorie: "Warnings", valeur: 5 },
+                    { categorie: "Succès", valeur: 83 }
+                ],
+                rapport: [
+                    { id: "R1", nom: "Test 1", statut: "Succès" },
+                    { id: "R2", nom: "Test 2", statut: "Erreur" }
+                    // ...
+                ]
+            });
+        
+            this.getView().setModel(oDashboardModel);
         },
+
+        
 
         onFilter: function () {
             const oView = this.getView();
