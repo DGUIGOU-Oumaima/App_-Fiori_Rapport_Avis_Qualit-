@@ -7,7 +7,43 @@
     <Page id="mainPage" title="Rapport des Avis">
         <content>
             
+            <!-- DASHBOARD EN HAUT -->
+    <VBox id="_IDGenVBox1" class="sapUiMediumMargin sapUiResponsiveMargin">
+        <ObjectNumber id="_IDGenObjectNumber3" number="{/stats/erreurs}" unit="Erreurs" />
 
+        <!-- Statistiques clés -->
+        <HBox id="_IDGenHBox2" justifyContent="SpaceAround" class="sapUiSmallMarginBottom">
+            <ObjectNumber id="_IDGenObjectNumber2" number="{/stats/erreurs}" unit="Erreurs" state="Error" />
+            <ObjectNumber id="_IDGenObjectNumber1" number="{/stats/warnings}" unit="Avertissements" state="Warning" />
+            <ObjectNumber id="_IDGenObjectNumber" number="{/stats/success}" unit="Corrects" state="Success" />
+        </HBox>
+
+        <!-- Taux de succès -->
+        <VBox id="_IDGenVBox2" class="sapUiSmallMarginBottom">
+            <Text id="idfg" text="Taux de réussite global" />
+            <ProgressIndicator id="_IDGenProgressIndicator" percentValue="{/stats/tauxSucces}" displayValue="{/stats/tauxSucces}%" state="Success" />
+        </VBox>
+
+        <!-- Graphique -->
+        <viz:VizFrame id="chart" xmlns:viz="sap.viz.ui5.controls"
+                      width="100%" height="400px" vizType="column">
+            <viz:dataset>
+                <viz.data:FlattenedDataset id="_IDGenFlattenedDataset" xmlns:viz.data="sap.viz.ui5.data"
+                                           data="{/chartData}">
+                    <viz.data:dimensions>
+                        <viz.data:DimensionDefinition id="_IDGenDimensionDefinition" name="Catégorie" value="{categorie}" />
+                    </viz.data:dimensions>
+                    <viz.data:measures>
+                        <viz.data:MeasureDefinition id="_IDGenMeasureDefinition" name="Valeur" value="{valeur}" />
+                    </viz.data:measures>
+                </viz.data:FlattenedDataset>
+            </viz:dataset>
+            <viz:feeds>
+                <viz.feeds:FeedItem id="_IDGenFeedItem" xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds" uid="valueAxis" type="Measure" values="Valeur" />
+                <viz.feeds:FeedItem id="_IDGenFeedItem1" xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds" uid="categoryAxis" type="Dimension" values="Catégorie" />
+            </viz:feeds>
+        </viz:VizFrame>
+    </VBox>
             <!-- Barre d'options -->
             <HBox id="_IDGenHBox" class="sapUiSmallMargin sapUiMediumMarginBottom" justifyContent="Start">
                 <Button id="_IDGenButton" text="Général" press="onShowGeneral" />
