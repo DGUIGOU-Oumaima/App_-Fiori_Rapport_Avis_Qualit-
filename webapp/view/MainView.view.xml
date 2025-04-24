@@ -6,25 +6,27 @@
     xmlns:layout="sap.ui.layout"
     xmlns:viz="sap.viz.ui5.controls"
     xmlns:viz.data="sap.viz.ui5.data"
+    xmlns:form="sap.ui.layout.form"
     xmlns:viz.feeds="sap.viz.ui5.controls.common.feeds">
 
     <Page id="mainPage" title="Rapport des Avis">
         <customHeader>
-            <Bar>
+            <Bar id="_IDGenBar">
                 <contentLeft>
-                    <Title text="Rapport des Avis" />
+                    <Title id="_IDGenTitle" text="Rapport des Avis" />
                 </contentLeft>
             </Bar>
         </customHeader>
         <content>
             <!-- Dashboard Section -->
-            <VBox id="dashboardBox" class="sapUiSmallMarginBottom dashboardContainer">
-                <Title text="Tableau de Bord" level="H2" class="sapUiTinyMarginBottom" />
-                <layout:Grid defaultSpan="XL12 L12 M12 S12" class="sapUiTinyMargin">
+             <Button id="_IDGenButton6" icon="sap-icon://hide" text="Afficher/Masquer le Dashboard" press="onToggleDashboard" />
+            <VBox id="dashboardBox" class="sapUiSmallMarginBottom dashboardContainer" visible="true">
+                <Title id="_IDGenTitle1" text="Tableau de Bord" level="H2" class="sapUiTinyMarginBottom" />
+                <layout:Grid id="_IDGenGrid" defaultSpan="XL12 L12 M12 S12" class="sapUiTinyMargin">
                     <!-- Tiles and Chart in a Horizontal Layout -->
-                    <layout:Grid defaultSpan="XL6 L6 M12 S12" class="sapUiTinyMargin">
+                    <layout:Grid id="_IDGenGrid1" defaultSpan="XL6 L6 M12 S12" class="sapUiTinyMargin">
                         <!-- Tiles -->
-                        <layout:Grid defaultSpan="XL4 L4 M4 S12" class="sapUiTinyMargin">
+                        <layout:Grid id="_IDGenGrid2" defaultSpan="XL4 L4 M4 S12" class="sapUiTinyMargin">
                             <!-- Tile for Errors -->
                             <GenericTile
                                 id="errorTile"
@@ -32,7 +34,7 @@
                                 subheader="Total"
                                 class="sapUiTinyMargin dashboardTile errorTile"
                                 press="onTilePress">
-                                <TileContent>
+                                <TileContent id="_IDGenTileContent">
                                     <NumericContent
                                         id="errorCount"
                                         value="{dashboard>/stats/erreurs}"
@@ -47,7 +49,7 @@
                                 subheader="Total"
                                 class="sapUiTinyMargin dashboardTile warningTile"
                                 press="onTilePress">
-                                <TileContent>
+                                <TileContent id="_IDGenTileContent1">
                                     <NumericContent
                                         id="warningCount"
                                         value="{dashboard>/stats/warnings}"
@@ -62,7 +64,7 @@
                                 subheader="Pourcentage"
                                 class="sapUiTinyMargin dashboardTile successTile"
                                 press="onTilePress">
-                                <TileContent>
+                                <TileContent id="_IDGenTileContent2">
                                     <NumericContent
                                         id="successRate"
                                         value="{dashboard>/stats/tauxSucces}"
@@ -74,7 +76,7 @@
                             </GenericTile>
                         </layout:Grid>
                         <!-- Chart -->
-                        <VBox class="chartContainer" fitContainer="true">
+                        <VBox id="_IDGenVBox1" class="chartContainer" fitContainer="true">
                             <viz:VizFrame
                                 id="statusChart"
                                 vizType="donut"
@@ -82,25 +84,25 @@
                                 height="200px"
                                 vizProperties="{title: {text: 'Répartition des Statuts'}}">
                                 <viz:dataset>
-                                    <viz.data:FlattenedDataset data="{dashboard>/chartData}">
+                                    <viz.data:FlattenedDataset id="_IDGenFlattenedDataset" data="{dashboard>/chartData}">
                                         <viz.data:dimensions>
-                                            <viz.data:DimensionDefinition
+                                            <viz.data:DimensionDefinition id="_IDGenDimensionDefinition"
                                                 name="Catégorie"
                                                 value="{dashboard>categorie}" />
                                         </viz.data:dimensions>
                                         <viz.data:measures>
-                                            <viz.data:MeasureDefinition
+                                            <viz.data:MeasureDefinition id="_IDGenMeasureDefinition"
                                                 name="Valeur"
                                                 value="{dashboard>valeur}" />
                                         </viz.data:measures>
                                     </viz.data:FlattenedDataset>
                                 </viz:dataset>
                                 <viz:feeds>
-                                    <viz.feeds:FeedItem
+                                    <viz.feeds:FeedItem id="_IDGenFeedItem"
                                         uid="size"
                                         type="Measure"
                                         values="Valeur" />
-                                    <viz.feeds:FeedItem
+                                    <viz.feeds:FeedItem id="_IDGenFeedItem1"
                                         uid="color"
                                         type="Dimension"
                                         values="Catégorie" />
@@ -129,6 +131,7 @@
                     <Input id="statutAvisInput" width="200px" placeholder="Rechercher..." />
                     <Button id="_IDGenButton3" text="Filtrer" press="onFilter" class="sapUiSmallMarginBegin" />
                 </HBox>
+                
             </VBox>
 
             <!-- Tableau principal : Général -->
@@ -155,7 +158,11 @@
                             <Text id="ezetyt" text="{localAvis>article}" />
                             <Text id="ezuyuie" text="{localAvis>description}" />
                             <Text id="ehjze" text="{localAvis>age}" />
-                            <Button id="_IDGenButton4" icon="sap-icon://hint" press="onShowFullVerificationReport" tooltip="Plus d'infos" />
+                            <HBox id="_IDGenHBoxCells">
+                                <Button id="_IDGenButton4" icon="sap-icon://hint" press="onShowFullVerificationReport" tooltip="Plus d'infos" />
+                                <Button id="_IDGenButtonNew" icon="sap-icon://form" press="onShowEditForm" tooltip="Ouvrir le formulaire" class="sapUiTinyMarginBegin" />
+                                <Button id="_IDGenButtonDownload" icon="sap-icon://download" press="onDownloadRow" tooltip="Télécharger la ligne" class="sapUiTinyMarginBegin" />
+                            </HBox>
                         </cells>
                     </ColumnListItem>
                 </items>
@@ -196,6 +203,37 @@
                     <Button id="_IDGenButton5" text="Fermer" press="onCloseVerifDialog" />
                 </endButton>
             </Dialog>
+            <!-- Nouveau Dialog pour le formulaire -->
+<Dialog id="editFormDialog" title="Formulaire de l'Avis" draggable="true" resizable="true">
+    <VBox id="_IDGenVBoxForm" class="sapUiSmallMargin">
+        <form:SimpleForm id="editAvisForm" editable="true" layout="ResponsiveGridLayout">
+            <form:content>
+                <Label id="_IDGenLabelForm1" text="Numéro d'avis" />
+                <Input id="formNumero" value="{formModel>/numero}" enabled="false" />
+                <Label id="_IDGenLabelForm2" text="Type d'avis" />
+                <Input id="formType" value="{formModel>/type}" />
+                <Label id="_IDGenLabelForm3" text="Statut de l'avis" />
+                <Input id="formStatut" value="{formModel>/statut}" />
+                <Label id="_IDGenLabelForm4" text="Date de l'avis" />
+                <Input id="formDate" value="{formModel>/date}" />
+                <Label id="_IDGenLabelForm5" text="Créé par" />
+                <Input id="formCreePar" value="{formModel>/creePar}" />
+                <Label id="_IDGenLabelForm6" text="Article" />
+                <Input id="formArticle" value="{formModel>/article}" />
+                <Label id="_IDGenLabelForm7" text="Description" />
+                <Input id="formDescription" value="{formModel>/description}" />
+                <Label id="_IDGenLabelForm8" text="Âge du dossier" />
+                <Input id="formAge" value="{formModel>/age}" />
+            </form:content>
+        </form:SimpleForm>
+    </VBox>
+    <beginButton>
+        <Button id="_IDGenButtonSave" text="Enregistrer" press="onSaveForm" />
+    </beginButton>
+    <endButton>
+        <Button id="_IDGenButtonCloseForm" text="Fermer" press="onCloseEditForm" />
+    </endButton>
+</Dialog>
         </content>
     </Page>
 </mvc:View>
