@@ -47,6 +47,96 @@ sap.ui.define([
                         delaiDetecteurFeu: "Jaune",
                         verifReceptionFeu: "Non",
                         autreChamp: "Remarques sur le dossier"
+                    },
+                    {
+                        numero: "AV003",
+                        type: "Qualité",
+                        statut: "Fermé",
+                        date: "2025-03-25",
+                        creePar: "Bob",
+                        article: "Art002",
+                        description: "Contrôle qualité effectué",
+                        age: "12 jours",
+                        tempsCycle: "5j",
+                        feu: "Rouge",
+                        delaiAQ: "4j",
+                        delaiAQFeu: "Rouge",
+                        delaiDetecteur: "3j",
+                        delaiDetecteurFeu: "Jaune",
+                        verifReceptionFeu: "Non",
+                        autreChamp: "Remarques sur le dossier"
+                    },
+                    {
+                        numero: "AV004",
+                        type: "Qualité",
+                        statut: "Fermé",
+                        date: "2025-03-25",
+                        creePar: "Bob",
+                        article: "Art002",
+                        description: "Contrôle qualité effectué",
+                        age: "12 jours",
+                        tempsCycle: "5j",
+                        feu: "Rouge",
+                        delaiAQ: "4j",
+                        delaiAQFeu: "Rouge",
+                        delaiDetecteur: "3j",
+                        delaiDetecteurFeu: "Jaune",
+                        verifReceptionFeu: "Non",
+                        autreChamp: "Remarques sur le dossier"
+                    },
+                    {
+                        numero: "AV005",
+                        type: "Qualité",
+                        statut: "Fermé",
+                        date: "2025-03-25",
+                        creePar: "Bob",
+                        article: "Art002",
+                        description: "Contrôle qualité effectué",
+                        age: "12 jours",
+                        tempsCycle: "5j",
+                        feu: "Rouge",
+                        delaiAQ: "4j",
+                        delaiAQFeu: "Rouge",
+                        delaiDetecteur: "3j",
+                        delaiDetecteurFeu: "Jaune",
+                        verifReceptionFeu: "Non",
+                        autreChamp: "Remarques sur le dossier"
+                    },
+                    {
+                        numero: "AV006",
+                        type: "Qualité",
+                        statut: "Fermé",
+                        date: "2025-03-25",
+                        creePar: "Bob",
+                        article: "Art002",
+                        description: "Contrôle qualité effectué",
+                        age: "12 jours",
+                        tempsCycle: "5j",
+                        feu: "Rouge",
+                        delaiAQ: "4j",
+                        delaiAQFeu: "Rouge",
+                        delaiDetecteur: "3j",
+                        delaiDetecteurFeu: "Jaune",
+                        verifReceptionFeu: "Non",
+                        autreChamp: "Remarques sur le dossier"
+                    },
+                    {
+                        numero: "AV007",
+                        type: "Qualité",
+                        statut: "Fermé",
+                        date: "2025-03-25",
+                        creePar: "Bob",
+                        article: "Art002",
+                        description: "Contrôle qualité effectué",
+                        age: "12 jours",
+                        tempsCycle: "5j",
+                        feu: "Rouge",
+                        delaiAQ: "4j",
+                        delaiAQFeu: "Rouge",
+                        delaiDetecteur: "3j",
+                        delaiDetecteurFeu: "Jaune",
+                        verifReceptionFeu: "Non",
+                        autreChamp: "Remarques sur le dossier"
                     }
                 ]
             };
@@ -147,6 +237,68 @@ sap.ui.define([
         onShowVerification: function () {
             this.byId("avisTable").setVisible(true);
             this.byId("delaiTable").setVisible(false);
-        }
+        },
+
+
+
+        onShowEditForm: function (oEvent) {
+            const oCtx = oEvent.getSource().getBindingContext("localAvis").getObject();
+            const oFormModel = new JSONModel(oCtx);
+            this.getView().setModel(oFormModel, "formModel");
+            const oDialog = this.byId("editFormDialog");
+            oDialog.open();
+        },
+        
+        onCloseEditForm: function () {
+            const oDialog = this.byId("editFormDialog");
+            oDialog.close();
+        },
+        
+        onSaveForm: function () {
+            const oFormModel = this.getView().getModel("formModel");
+            const oData = oFormModel.getData();
+            MessageBox.information("Données enregistrées (simulation) : " + JSON.stringify(oData));
+            this.byId("editFormDialog").close();
+        },
+
+
+        onDownloadRow: function (oEvent) {
+            // Récupérer les données de la ligne cliquée
+            const oCtx = oEvent.getSource().getBindingContext("localAvis").getObject();
+        
+            // Vérifier que les données existent
+            if (!oCtx || !oCtx.numero) {
+                MessageBox.error("Erreur : aucune donnée valide à télécharger.");
+                return;
+            }
+        
+            // Créer le contenu JSON
+            const sJsonContent = JSON.stringify(oCtx, null, 2);
+        
+            // Créer un Blob pour le fichier JSON
+            const oBlob = new Blob([sJsonContent], { type: "application/json;charset=utf-8;" });
+        
+            // Créer un lien de téléchargement
+            const sUrl = URL.createObjectURL(oBlob);
+            const oLink = document.createElement("a");
+            oLink.setAttribute("href", sUrl);
+            oLink.setAttribute("download", `avis_${oCtx.numero}.json`);
+            document.body.appendChild(oLink);
+        
+            // Déclencher le téléchargement
+            oLink.click();
+        
+            // Nettoyer
+            document.body.removeChild(oLink);
+            URL.revokeObjectURL(sUrl);
+        
+            // Message de confirmation
+            MessageBox.information(`Fichier JSON pour l'avis ${oCtx.numero} téléchargé.`);
+        },
+        onToggleDashboard: function () {
+            var oDashboard = this.byId("dashboardBox");
+            var bVisible = oDashboard.getVisible();
+            oDashboard.setVisible(!bVisible);
+          }
     });
 });
